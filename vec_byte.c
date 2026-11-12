@@ -4,12 +4,12 @@
 
 vec_byte *vec_byte_init(int32_t size, int8_t value) {
   vec_byte *vec = (vec_byte *)malloc(sizeof(vec_byte));
-  if (!vec) {
+  if (!vec || size < 0) {
     return NULL;
   }
   vec->size = size;
   if (size == 0) {
-    vec->capacity = 1;
+    vec->capacity = 8;
   } else {
     vec->capacity = size;
   }
@@ -41,7 +41,7 @@ int vec_byte_set_size(vec_byte *vec, int32_t size) {
   if (!vec || size < 0) {
     return -1;
   }
-  if (size < vec->capacity) {
+  if (size <= vec->capacity) {
     vec->size = size;
     return 0;
   }
@@ -102,4 +102,4 @@ int vec_byte_push(vec_byte *vec, int8_t value) {
   ++vec->size;
   vec->capacity = 2 * vec->capacity;
   return 0;
-} 
+}
