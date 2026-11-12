@@ -4,6 +4,6 @@
 
 vec_int *Eratosphene(int32_t n);
 
-double dzeta_def(double s, int32_t n);
+double dzeta_def(double s, double eps);
 
-double dzeta_Euler(double s, vec_int *primes);
+double dzeta_Euler(double s, vec_int *primes, double eps);

@@ -5,7 +5,7 @@
 
 vec_int *vec_int_init(int32_t size, int32_t value) {
   vec_int *vec = (vec_int *)malloc(sizeof(vec_int));
-  if (!vec || size < 1) {
+  if (!vec || size < 0) {
     return NULL;
   }
   vec->size = size;
