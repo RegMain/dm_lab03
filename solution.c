@@ -1,7 +1,6 @@
 #include "solution.h"
 #include "vec_int.h"
 #include "vec_byte.h"
-#include "vec_double.h"
 #include "math.h"
 #include <stdint.h>
 #include <stdlib.h>
@@ -61,11 +60,11 @@ double dzeta_Euler(double s, vec_int *primes, double eps) {
   return res;
 }
 
-int sieve(uint32_t n, vec_double **result, double (*f)(int32_t x)) {
+int sieve(uint32_t n, vec_int **result, int32_t (*f)(int32_t x, int32_t k)) {
     if (!result) {
         return 1;
     }
-    *result = vec_double_init(n + 1, 0);
+    *result = vec_int_init(n + 1, 0);
     if (!*result) {
         return 2;
     }
@@ -73,15 +72,13 @@ int sieve(uint32_t n, vec_double **result, double (*f)(int32_t x)) {
     if (!primes) {
         return 3;
     }
-    for (uint32_t i = 0; i < n + 1; ++i) {
+    for (uint32_t i = 0; i < vec_int_get_size(primes); ++i) {
         int32_t prime;
         if (!vec_int_get(primes, i, &prime)) {
-            double f_value = f(prime);
-            vec_double_set(*result, prime, f_value);
-            int32_t prev = prime;
-            for (int32_t j = prime * prime; j < n; j *= prime) {
-                vec_double_set(*result, j, prev * f_value);
-                prev = j;
+            int32_t s = 1;
+            for (int64_t j = prime; j <= n; j *= prime) {
+                vec_int_set(*result, j, f(j, s));
+                ++s;
             }
         } else {
             vec_int_destroy(primes);
@@ -112,10 +109,13 @@ int factorize(int32_t x, vec_int **result) {
             }
         }
     }
+    if (x > 1) {
+        vec_int_push(*result, x);
+    }
     return 0;
 }
 
-int sieve_compute(vec_double *sieve, int32_t x, double *value) {
+int sieve_compute(vec_int *sieve, int32_t x, int32_t *value) {
     if (!sieve) {
         return 1;
     }
@@ -125,19 +125,19 @@ int sieve_compute(vec_double *sieve, int32_t x, double *value) {
     for (uint32_t i = 0; i < vec_int_get_size(divs); ++i) {
         int32_t div;
         if (!vec_int_get(divs, i, &div)) {
-            double div_value;
-            if (!vec_double_get(sieve, div, &div_value)) {
+            int32_t div_value;
+            if (!vec_int_get(sieve, div, &div_value)) {
                 result *= div_value;
             } else {
-                free(divs);
+                vec_int_destroy(divs);
                 return 3;
             }
         } else {
-            free(divs);
+            vec_int_destroy(divs);
             return 2;
         }
     }
     *value = result;
-    free(divs);
+    vec_int_destroy(divs);
     return 0;
 }
