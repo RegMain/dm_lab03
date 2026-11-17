@@ -74,11 +74,12 @@ int vec_int_set(vec_int *vec, int32_t index, int32_t value) {
   return 0;
 }
 
-int32_t *vec_int_get(vec_int *vec, int32_t index) {
+int vec_int_get(vec_int *vec, int32_t index, int32_t *value) {
   if (!vec || !vec->ptr || index < 0 || index >= vec->size) {
-    return NULL;
+    return 1;
   }
-  return &vec->ptr[index];
+  *value = vec->ptr[index];
+  return 0;
 }
 
 int vec_int_push(vec_int *vec, int32_t value) {

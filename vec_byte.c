@@ -73,11 +73,12 @@ int vec_byte_set(vec_byte *vec, int32_t index, int8_t value) {
   return 0;
 }
 
-int8_t *vec_byte_get(vec_byte *vec, int32_t index) {
+int vec_byte_get(vec_byte *vec, int32_t index, int8_t *value) {
   if (!vec || !vec->ptr || index < 0 || index >= vec->size) {
-    return NULL;
+    return 1;
   }
-  return &vec->ptr[index];
+  *value = vec->ptr[index];
+  return 0;
 }
 
 int vec_byte_push(vec_byte *vec, int8_t value) {
